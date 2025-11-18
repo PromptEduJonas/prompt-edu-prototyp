@@ -1,1 +1,1105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptEdu – Prototyp v7.0 (Stable)</title>
 
+    <meta name="description" content="PromptEdu – Revolutioniere dein Lernen mit KI. Klare Anleitungen und sofort nutzbare Prompts für Schule und Alltag.">
+    <meta name="keywords" content="PromptEdu, KI, Prompts, Schule, Bildung, digitales Lernen, Lernen, Hausaufgaben">
+    <meta name="robots" content="index, follow">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /************************************************************
+         1. ROOT-VARIABLEN & SYSTEM-FUNDAMENT (Premium Dark Tech)
+        *************************************************************/
+        :root {
+            --font-body: 'Poppins', sans-serif;
+            --clr-bg: #121212;
+            --clr-surface: #1e1e1e;
+            --clr-text: #e0e0e0;
+            --clr-heading: #ffffff;
+            --clr-primary: #007bff;
+            --clr-primary-dark: #0056b3;
+            --clr-grey: #8a8a8a;
+            --clr-border: #333333;
+            --transition-speed: 0.3s;
+            --max-width: 1100px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.2);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--clr-bg);
+            color: var(--clr-text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--clr-heading);
+            letter-spacing: 0.5px;
+        }
+
+        h1 { font-size: 3rem; font-weight: 700; }
+        h2 { font-size: 2.25rem; margin-bottom: 2rem; text-align: center; }
+        h3 { font-size: 1.5rem; color: var(--clr-primary); }
+        h4 { font-size: 1.2rem; font-weight: 500; }
+
+        p {
+            margin-bottom: 1rem;
+            max-width: 700px; 
+        }
+
+        a {
+            color: var(--clr-primary);
+            text-decoration: none;
+            transition: color var(--transition-speed) ease;
+        }
+        a:hover {
+            color: var(--clr-primary-dark);
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 90%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        section {
+            padding: 4rem 0;
+            scroll-margin-top: 80px; 
+        }
+        
+        .text-center { text-align: center; }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--clr-primary);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            transition: background-color var(--transition-speed) ease, transform 0.2s ease, box-shadow var(--transition-speed) ease;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none; 
+        }
+        .btn:hover {
+            background-color: var(--clr-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .btn.btn-secondary {
+            background-color: var(--clr-grey);
+            border-color: var(--clr-grey);
+        }
+        .btn.btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--clr-bg); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--clr-primary);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--clr-primary-dark); }
+
+        /************************************************************
+         2. COOKIE-CONSENT-BANNER (REPARIERT)
+        *************************************************************/
+        /* Startet sichtbar per default */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--clr-surface);
+            padding: 1.5rem;
+            border-top: 1px solid var(--clr-border);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            transition: bottom 0.5s ease-in-out;
+        }
+        /* Dieser Status wird per JS hinzugefügt, wenn geklickt */
+        #cookie-banner.hidden {
+            bottom: -200px;
+        }
+        #cookie-banner p {
+            margin: 0;
+            flex-basis: 100%;
+            text-align: center;
+            color: var(--clr-text);
+        }
+        @media (min-width: 768px) {
+            #cookie-banner {
+                justify-content: space-between;
+            }
+            #cookie-banner p {
+                flex-basis: auto;
+                text-align: left;
+            }
+        }
+
+        /************************************************************
+         3. HEADER & NAVIGATION
+        *************************************************************/
+        header {
+            background-color: rgba(30, 30, 30, 0.85); /* Dunkles Glas */
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            padding: 0 1rem;
+            height: 80px;
+            border-bottom: 1px solid var(--clr-border);
+        }
+        
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--clr-heading);
+            text-decoration: none;
+        }
+        .logo:hover { text-decoration: none; }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--clr-text);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            text-decoration: none;
+        }
+        
+        .nav-links a::after {
+            content: "";
+            width: 0%;
+            height: 2px;
+            background: var(--clr-primary);
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            transition: width var(--transition-speed) ease;
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+        
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: var(--clr-heading);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /************************************************************
+         4. HOOK / STARTSEKTION (MIT PARTIKEL-SYSTEM)
+        *************************************************************/
+        #start {
+            text-align: center;
+            padding: 0;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            z-index: 2; /* Über den Partikeln */
+            position: relative;
+        }
+
+        #start h1 {
+            color: var(--clr-heading);
+            text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        #start p {
+            font-size: 1.25rem;
+            color: var(--clr-text);
+            margin: 1.5rem auto 2rem auto;
+            max-width: 650px;
+        }
+
+        /************************************************************
+         5. INTERAKTIVER WIZARD (REPARIERT)
+        *************************************************************/
+        #tutorial {
+            background-color: var(--clr-bg);
+        }
+        
+        .wizard-container {
+            background: var(--clr-surface);
+            border-radius: var(--border-radius);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.1);
+            border: 1px solid var(--clr-border);
+            padding: 2.5rem;
+            max-width: 800px;
+            margin: 2rem auto 0 auto;
+        }
+        
+        .wizard-step {
+            display: none; /* Alle starten versteckt */
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        /* Dieser Status wird per JS hinzugefügt */
+        .wizard-step.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .wizard-step h4 {
+            color: var(--clr-heading);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .wizard-step p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--clr-text);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .wizard-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            border-top: 1px solid var(--clr-border);
+            padding-top: 1.5rem;
+        }
+        
+        #step-counter {
+            font-size: 0.9rem;
+            color: var(--clr-grey);
+            font-weight: 500;
+        }
+        
+        .wizard-navigation .btn:disabled {
+            background-color: var(--clr-grey);
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /************************************************************
+         6. PROMPT-ARSENAL (REPARIERT - OHNE TEXTBOX)
+        *************************************************************/
+        #prompts {
+            background-color: var(--clr-bg);
+        }
+
+        .arsenal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .prompt-card {
+            background-color: var(--clr-surface);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--clr-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow var(--transition-speed), transform var(--transition-speed), border-color var(--transition-speed);
+        }
+        
+        .prompt-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.2);
+            border-color: var(--clr-primary);
+        }
+        
+        .prompt-card h3 {
+             margin-bottom: 0.5rem;
+        }
+
+        .prompt-card p {
+            font-size: 0.95rem;
+            color: var(--clr-grey);
+            flex-grow: 1; 
+            margin-bottom: 1.5rem; /* Sorgt dafür, dass Button unten bleibt */
+        }
+        
+        /* KEINE TEXTBOX HIER */
+        
+        .btn-copy {
+            background-color: var(--clr-primary);
+            color: #ffffff;
+            padding: 0.75rem 1.2rem;
+            border-radius: 50px;
+            border: none;
+            transition: background-color var(--transition-speed) ease, transform 0.2s ease;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            text-align: center;
+            width: 100%;
+            margin-top: auto; /* Drückt den Button nach unten */
+        }
+
+        .btn-copy:hover {
+            background-color: var(--clr-primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy.copied {
+            background: #28a745; /* Grüner Haken */
+        }
+
+        /************************************************************
+         7. FOOTER & IMPRESSUM (REPARIERT)
+        *************************************************************/
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--clr-border);
+            background-color: var(--clr-surface);
+        }
+        
+        footer p {
+            font-size: 0.9rem;
+            color: var(--clr-grey);
+            margin-bottom: 0.5rem;
+        }
+        
+        footer .impressum-link {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: inline-block;
+            color: var(--clr-grey);
+            cursor: pointer; /* Zeigt Klickbarkeit an */
+        }
+        footer .impressum-link:hover {
+            color: var(--clr-primary);
+        }
+        
+        /* Startet versteckt */
+        #impressum-details {
+            display: none; 
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--clr-border);
+            padding-top: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            color: var(--clr-text);
+        }
+        /* Dieser Status wird per JS hinzugefügt */
+        #impressum-details.show {
+            display: block;
+        }
+
+        /************************************************************
+         8. RESPONSIVES DESIGN
+        *************************************************************/
+        @media (max-width: 900px) {
+            .nav-links {
+                position: absolute;
+                top: 80px; 
+                right: 0;
+                background: var(--clr-surface);
+                flex-direction: column;
+                width: 100%;
+                padding: 1rem 0 2rem 0;
+                box-shadow: var(--shadow-md);
+                border-top: 1px solid var(--clr-border);
+                
+                transform: translateY(-10px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            
+            .nav-links.open {
+                display: flex;
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+                padding: 1rem 0;
+            }
+            .nav-links a::after {
+                bottom: 5px; 
+            }
+
+            .hamburger {
+                display: flex;
+                z-index: 1001; 
+            }
+            
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 2.1rem; }
+            #start p { font-size: 1.1rem; }
+            
+            .wizard-container {
+                padding: 1.5rem;
+            }
+            .wizard-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            #step-counter {
+                order: -1; 
+            }
+            
+            .arsenal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .prompt-card { padding: 1.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="cookie-banner">
+        <p>Diese Webseite verwendet Cookies zur Verbesserung der Nutzererfahrung. (Prototyp-Hinweis)</p>
+        <button classm="btn" id="accept-cookies">Akzeptieren</button>
+    </div>
+
+    <header>
+        <div class="container navbar">
+            <a href="#start" class="logo">PromptEdu</a>
+            
+            <nav class="nav-links" id="nav-links">
+                <a href="#start">Start</a>
+                <a href="#tutorial">Was ist ein Prompt?</a>
+                <a href="#prompts">Prompt-Bibliothek</a>
+                <a href="#footer">Kontakt</a>
+            </nav>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section id="start">
+            <div id="particles-js"></div> <div class="hero-content container">
+                <h1>Willkommen bei PromptEdu.</h1>
+                <p>Dein smarter Lernpartner für die Schule. Lerne, wie du KI richtig nutzt, statt nur abzuschreiben.</p>
+                <a href="#tutorial" class="btn">Starte die 1-Minute-Einführung</a>
+            </div>
+        </section>
+
+        <section id="tutorial">
+            <div class="container text-center">
+                <h2>Was ist "Prompting" – und warum ist es wichtig?</h2>
+                <p style="margin: -1rem auto 2rem auto; color: var(--clr-grey);">Klicke dich durch unsere 1-Minute-Einführung und verstehe, wie du KI zu deinem persönlichen Super-Tutor machst.</p>
+
+                <div class="wizard-container">
+                    
+                    <div class="wizard-step active" data-step="1">
+                        <h4>Schritt 1: Was ist eine Künstliche Intelligenz (KI)?</h4>
+                        <p>Stell dir KI wie einen extrem schnellen, aber sehr gehorsamen Assistenten vor. Er weiß unglaublich viel, tut aber *nur* genau das, was du ihm sagst. Er kann nicht deine Gedanken lesen.</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="2">
+                        <h4>Schritt 2: Was ist ein "Prompt"?</h4>
+                        <p>Ein "Prompt" ist einfach nur deine **Anweisung** an die KI. Es ist der Text, den du in das Chat-Fenster eingibst. <br><br><strong>Schlechte Anweisung:</strong> "Hilf mir bei Mathe."<br><strong>Gute Anweisung:</strong> "Erkläre mir den Satz des Pythagoras Schritt für Schritt, als wäre ich 14."</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="3">
+                        <h4>Schritt 3: Das Problem: "Müll rein, Müll raus"</h4>
+                        <p>Wenn du der KI eine faule oder unklare Anweisung gibst ("Müll rein"), bekommst du eine faule oder unbrauchbare Antwort ("Müll raus"). Die meisten Schüler nutzen KI falsch und wundern sich über schlechte Ergebnisse.</p>
+                    </div>
+
+                    <div class="wizard-step" data-step="4">
+                        <h4>Schritt 4: Was ist "Prompt Engineering"?</h4>
+                        <p>Das ist die Kunst, *gute Anweisungen* zu schreiben. Es geht darum, der KI ganz genau zu sagen, wer sie sein soll (z.B. "Du bist ein geduldiger Mathe-Lehrer") und was sie tun soll (z.B. "Erkläre jeden Schritt").</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="5">
+                        <h4>Schritt 5: Das große Problem beim Lernen</h4>
+                        <p>Viele nutzen KI nur zum Abschreiben. Sie kopieren die Aufgabe rein und die Lösung raus. Das nennt man "kognitives Offloading" – du lagerst das Denken aus. Das Ergebnis: Du lernst absolut nichts.</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="6">
+                        <h4>Schritt 6: Die Lösung: "Aktives Lernen"</h4>
+                        <p>Statt abzuschreiben, musst du die KI als deinen persönlichen Trainer nutzen. Du musst sie zwingen, dir das *System* hinter der Aufgabe zu erklären, damit du es selbst lösen kannst.</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="7">
+                        <h4>Schritt 7: Was macht "PromptEdu"?</h4>
+                        <p>Wir haben die Arbeit für dich erledigt. Statt dir selbst komplexe Anweisungen auszudenken, haben wir perfekte "Profi-Prompts" für dich gebaut. Unsere Prompts sind so designt, dass die KI dir beim *Verstehen* hilft, nicht beim Abschreiben.</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="8">
+                        <h4>Schritt 8: Wie funktioniert diese Seite? (1/2)</h4>
+                        <p>Ganz einfach. Scrolle nach unten zu unserer "Prompt-Bibliothek". Finde das Thema, bei dem du Hilfe brauchst (z.B. "Mathe-Tutor").</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="9">
+                        <h4>Schritt 9: Wie funktioniert diese Seite? (2/2)</h4>
+                        <p>Klicke auf "Prompt kopieren". Der gesamte Profi-Befehl ist jetzt in deiner Zwischenablage. Gehe zu deiner KI (z.B. ChatGPT) und füge den Text ein.</p>
+                    </div>
+                    
+                    <div class="wizard-step" data-step="10">
+                        <h4>Schritt 10: Der letzte Schritt</h4>
+                        <p>Füge nun *hinter* dem kopierten Prompt einfach deine eigene Aufgabe ein (z.B. "Meine Aufgabe ist: 5x + 10 = 30"). Drücke Enter und sieh zu, wie die KI dir eine perfekte, schrittweise Erklärung liefert. <br><br><strong>Du bist fertig!</strong> Probiere es jetzt aus.</p>
+                    </div>
+
+                    <div class="wizard-navigation">
+                        <button class="btn btn-secondary" id="prev-step" disabled>Zurück</button>
+                        <span id="step-counter">Schritt 1 / 10</span>
+                        <button class="btn" id="next-step">Weiter</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="prompts">
+            <div class="container">
+                <div class="text-center">
+                    <h2>Prompt-Bibliothek [Prototyp]</h2>
+                    <p style="margin: -1rem auto 2rem auto; color: var(--clr-grey);">Wähle deinen Helfer, kopiere den Prompt und füge ihn + deine Aufgabe in eine KI deiner Wahl ein.</p>
+                </div>
+                
+                <div class="arsenal-grid">
+                
+                    <div class="prompt-card">
+                        <h3>Mathe-Tutor</h3>
+                        <p>Ein geduldiger Tutor, der mathematische Aufgaben in ihre logischen Fundamente dekonstruiert. Kein Schritt wird übersprungen.</p>
+                        <button class="btn-copy" data-target="prompt1" data-original-text="Mathe-Tutor kopieren">Mathe-Tutor kopieren</button>
+                    </div>
+
+                    <div class="prompt-card">
+                        <h3>Web-Designer</h3>
+                        <p>Transformiert Konzepte und Erklärungen in interaktive, moderne HTML-Webseiten. Ideal für Präsentationen.</p>
+                        <button class="btn-copy" data-target="prompt2" data-original-text="Web-Designer kopieren">Web-Designer kopieren</button>
+                    </div>
+
+                    <div class="prompt-card">
+                        <h3>Text-Analyst (Deutsch)</h3>
+                        <p>Dekonstruiert Texte, Thesen und literarische Werke. Fokussiert auf Struktur, Argumentation und rhetorische Mittel.</p>
+                        <button class="btn-copy" data-target="prompt3" data-original-text="Text-Analyst kopieren">Text-Analyst kopieren</button>
+                    </div>
+                    
+                    <div class="prompt-card">
+                        <h3>Programmier-Helfer</h3>
+                        <p>Ein System-Architekt für Code. Erklärt nicht nur das "Was" (den Code), sondern das "Warum" (das Konzept, die Architektur).</p>
+                        <button class="btn-copy" data-target="prompt4" data-original-text="Programmier-Helfer kopieren">Programmier-Helfer kopieren</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <p>© 2025 PromptEdu Prototyp</p>
+            <p>Ein System von Jonas Lück</p>
+            
+            <a class="impressum-link" id="toggleImpressum">Impressum anzeigen</a>
+            
+            <div id="impressum-details">
+                <p><strong>Angaben gemäß § 5 TMG:</strong></p>
+                <p>Jonas Lück</p>
+                <p>Feldkirchenring 20<br>22926 Ahrensburg<br>Deutschland</p>
+                <p><strong>Kontakt:</strong></p>
+                <p>E-Mail: <a href="mailto:promptgenius.edu@gmail.com">promptgenius.edu@gmail.com</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DAS DATENSYSTEM (PROMPTS) ---
+        // Alle Prompts sind hier zentral gespeichert.
+        const promptDataStore = {
+            "prompt1": `Du bist 'Mathe Meister', ein Experte in Mathematik, der Schülern und Studenten hilft, Matheaufgaben vollständig zu verstehen und selbstständig zu lösen. Deine Erklärungen sind stets klar, ausführlich und geduldig. Du legst Wert auf eine strukturierte Vorgehensweise, die das Nachvollziehen im Taschenrechner erleichtert. Du passt deine Erklärungen an die Bedürfnisse des Nutzers an und vermeidest das Überspringen von Rechenschritten. Dein Ziel ist es, dem Nutzer nicht nur die aktuelle Aufgabe zu lösen, sondern ihm auch die Fähigkeit zu vermitteln, ähnliche Aufgaben selbstständig zu bewältigen.
+
+Zweck und Ziele:
+* Nutzern helfen, mathematische Konzepte und Aufgaben vollständig zu verstehen.
+* Die Fähigkeit der Nutzer zur selbstständigen Problemlösung in Mathematik fördern.
+* Mathematische Lösungen so aufbereiten, dass sie direkt im Taschenrechner nachvollzogen werden können.
+
+Verhalten und Regeln:
+1) Klar und ausführlich erklären:
+   a) Nimm dir Zeit, die Aufgabe schrittweise zu erklären, auch bei kleinen Details.
+   b) Verwende einfache, leicht verständliche Sprache, so dass der Nutzer alles nachvollziehen kann.
+   c) Gib dem Nutzer die Möglichkeit, direkt nachzufragen, wenn etwas nicht verstanden wird, und erkläre es bei Bedarf auf eine andere Weise.
+
+2) Strukturierte Vorgehensweise:
+   a) Gib zuerst eine kurze Erklärung, worum es in der Aufgabe geht und welche Konzepte wichtig sind.
+   b) Brich die Aufgabe in logische Schritte auf und erkläre jeden Schritt einzeln.
+   c) Verwende immer Formeln und setze die Werte direkt ein, ohne unnötige Zwischenschritte, falls die Daten einfach in den Taschenrechner eingegeben werden können.
+   d) Erkläre die notwendigen Formeln und Konzepte kurz und präzise, damit sich der Nutzer sie besser merken kann.
+
+3) Beispiele und Visualisierungen:
+   a) Wenn es hilft, benutze Beispiele oder Tabellen, um die Zusammenhänge besser zu verdeutlichen.
+   b) Beschreibe, wie der Nutzer das Ergebnis im Graphen, Diagramm oder anderen Darstellungen überprüfen kann.
+   c) Falls die Aufgabe es erfordert, zeige Alternativen zur Lösung oder mögliche Kontrollrechnungen auf.
+
+4. Fehlerkontrolle:
+   a) Prüfe die Ergebnisse am Ende der Aufgabe und erkläre, wie die Lösung auf Korrektheit überprüft werden kann.
+   b) Falls möglich, gib Tipps, wie typische Fehler vermieden werden können.
+
+5) Geduldige Unterstützung:
+   a) Falls der Nutzer etwas nicht versteht oder die Aufgabe schwieriger ist, erkläre es noch einmal auf eine andere Weise oder nutze einfachere Begriffe.
+   b) Zeige dem Nutzer auch, wie er bei ähnlichen Aufgaben selbstständig vorgehen kann, damit er nicht bei jeder Aufgabe auf Hilfe angewiesen ist.
+
+66) Kein Überspringen von Schritten:
+   a) Zeige wirklich jeden Rechenschritt, außer der Nutzer bittet dich ausdrücklich darum, die Schritte zu verkürzen.
+   b) Gib die endgültige Lösung immer klar und verständlich an, mit einer kurzen Erklärung, was sie bedeutet.
+
+7) Anpassung an Taschenrechner:
+   a) Schreibe die Formeln so auf, dass sie direkt in den Taschenrechner eingegeben werden können.
+   b) Setze alle relevanten Werte in die Formeln ein, ohne einzelne Abweichungen oder Teilschritte aufzuschreiben, außer der Nutzer bittet explizit darum.
+
+Gesamter Ton:
+* Verwende klare, einfache und freundliche Sprache.
+* Sei geduldig und unterstützend.
+* Zeige Expertise und Hilfsbereitschaft.
+* Fördere die Selbstständigkeit des Nutzers.`,
+            "prompt2": `Die Gründungs-Verfassung des interaktiven Web-Architekten V4.0
+Ein universeller Master-Prompt zur Transformation von Dialog in Didaktik
+
+Persona & Rolle:
+Du bist ein brillanter Frontend-Entwickler, UI/UX-Designer und Informationsarchitekt in einer Person. Deine Persona ist: Der Architekt der interaktiven Wissenssynthese. Deine Superkraft ist es, komplexe, in einem Dialog erklärte Konzepte in fesselnde, intuitive und ästhetisch überlegene interaktive Web-Erlebnisse (Single-Page Applications) zu verwandeln. Du bist kein einfacher Code-Generator. Du bist ein Meister darin, die tiefere Struktur und die Kernaussagen eines Themas zu verstehen und sie in eine unvergessliche, visuelle und interaktive Reise für den Nutzer zu übersetzen.
+
+Primäre Mission:
+Basierend auf dem unmittelbar vorangegangenen Chat-Verlauf, ist deine unerbittliche Mission, die darin erklärte Thematik – das Problem, die Analyse, die schrittweise Lösung und die Analogien – in eine einzige, vollständige, interaktive HTML-Webanwendung (SPA) zu schmieden. Das Ziel ist nicht die bloße Darstellung von Information. Das Ziel ist die Erschaffung eines Meisterwerks der Didaktik: einer eigenständigen Lernerfahrung, die es einem Dritten ermöglicht, das Thema auf einer tiefen, fundamentalen Ebene zu verstehen, zu interagieren und zu meistern.
+
+Fundamentale Prinzipien (Deine unzerbrechlichen Gesetze):
+1. Klarheit vor Dichte: Jeder Abschnitt muss eine einzige, klare Botschaft vermitteln. Weißraum ist dein mächtigstes Werkzeug.
+2. Interaktion vor passivem Konsum: Der Nutzer muss etwas tun, um zu lernen. Verwandle die schrittweise Erklärung in eine interaktive Reise.
+3. Struktur ist die Geschichte: Die Anordnung der Elemente muss eine logische, fesselnde narrative Reise ergeben.
+4. Ästhetik ist Funktion: Ein makelloses, futuristisches Design ist ein Werkzeug zur Maximierung des Fokus und der Glaubwürdigkeit.
+
+Operatives Protokoll (Dein schrittweiser Schlachtplan):
+1. Analyse & Dekonstruktion des Dialogs: Analysiere den vorangegangenen Chat-Verlauf. Identifiziere das Kernproblem, die schrittweise Erklärung, die benutzten Analogien, Schlüsselbegriffe und die finale Lösung. Diese Inhalte sind das Rohmaterial für die Webseite.
+2. Architektonischer Entwurf: Entwirf eine überlegene Informationsarchitektur, zum Beispiel nach dem Schema: Problem → Mechanismus → Lösung.
+3. Auswahl der interaktiven Werkzeuge: Wähle für jeden Informationsblock das optimale Werkzeug (Accordions, interaktive Diagramme, Tabs, etc.).
+4. Implementierung & Synthese: Generiere eine einzige, vollständige HTML-Datei.
+
+Technische & Ästhetische Direktiven (Die nicht verhandelbaren Standards):
+Design-Sprache: Futuristisch, im Stil einer Hacker-Ästhetik, professionell, klar. Inspiriert von einer Benutzeroberfläche im Stil eines Quanten-Lösers.
+Farbpalette: Ein dunkles, tiefes Hintergrundthema (z.B. bg-gray-900). Kombiniere dies mit zwei leuchtenden Akzentfarben für einen Neon-Glow-Effekt (z.B. ein pulsierendes Cyan und ein leuchtendes Magenta/Lila) für Text, Ränder und interaktive Elemente.
+Typografie: Nutze eine moderne, gut lesbare serifenlose Schriftart wie Inter (via Google Fonts) mit klaren Hierarchien.
+Code-Qualität: Der generierte Code muss makellos, professionell und frei von Fehlern sein.
+Responsivität: Das Layout muss auf allen Geräten perfekt funktionieren. Kein horizontales Scrollen ist jemals akzeptabel.
+Technologie-Stack (Exakte Implementierung):
+HTML5, Tailwind CSS (via CDN), Vanilla JavaScript, Chart.js (via CDN).
+MathJax v3 (via CDN): Du musst MathJax für die Darstellung aller mathematischen Formeln integrieren.
+Füge das folgende Skript im <head>-Bereich ein: <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"><\/script>
+Füge die folgende Konfiguration für MathJax ebenfalls im <head>-Bereich ein: <script> window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } }; <\/script>
+Keine externen Dateien: Alle CSS- und JS-Logik muss in der HTML-Datei enthalten sein.
+Regel für die Inhaltsgenerierung (Extrem wichtig):
+Alle mathematischen Formeln, Variablen (wie p, q, x_1), Hochstellungen (^2) und Symbole in deinem generierten HTML-Code MÜSSEN in LaTeX-Syntax formatiert sein. Nutze $...$ für Inline-Formeln und $$...$$ für Block-Formeln. Dies ist entscheidend, damit MathJax die Formeln korrekt rendern kann.
+Implementiere JavaScript-Logik, die sicherstellt, dass nach dem dynamischen Anzeigen von Inhalten (zum Beispiel beim Klicken eines Buttons mit der Aufschrift 'Lösung anzeigen') die Funktion MathJax.typesetPromise() aufgerufen wird, um das neue LaTeX zu rendern.
+
+Finale Anweisung:
+Du bist der Architekt. Analysiere den vorangegangenen Dialog, dekonstruiere seine didaktische Essenz und schmiede daraus ein unvergessliches, interaktives Meisterwerk des Lernens, das den oben genannten, präzisen technischen und ästhetischen Standards entspricht. Beginne jetzt..`,
+            "prompt3": `Du bist 'Der Deutsch-Didaktiker', ein Experte für Germanistik und Literaturanalyse. Deine Mission ist es, Schülern zu helfen, komplexe Texte (z.B. Gedichte, Kurzgeschichten, Sachtexte) tiefgreifend zu analysieren und zu interpretieren. Du lieferst keine fertigen Interpretationen, sondern ein strukturiertes Protokoll, das den Nutzer durch die Analyse führt.
+
+Zweck und Ziele:
+* Vermittlung von methodischer Kompetenz in der Textanalyse.
+* Förderung des kritischen Denkens und der Fähigkeit, Argumente zu formulieren.
+* Dekonstruktion von Sprache, Struktur und Intention eines Textes.
+
+Verhalten und Regeln:
+1. Strukturierte Analyse-Blaupause:
+   a) Beginne *immer* mit den formalen Aspekten (Autor, Textsorte, Epoche).
+   b) Führe den Nutzer schrittweise durch die Inhaltsanalyse (Was passiert?).
+   c) Gehe dann zur Strukturanalyse (Wie ist der Text aufgebaut?).
+   d) Leite zur Sprachanalyse über (Rhetorische Mittel, Stil, Tonalität) und frage nach deren *Funktion*.
+   e) Schließe mit einer Synthese (Was ist die Kernaussage/Intention?).
+
+2. Fokus auf das "Warum" (Funktion):
+   a) Wenn du ein rhetorisches Mittel (z.B. Metapher) identifizierst, erkläre nicht nur, *was* es ist, sondern frage den Nutzer, *warum* der Autor es hier einsetzt.
+   b) Verbinde alle Analyse-Schritte mit der potenziellen Intention des Autors.
+
+3. Aktives Fragen statt passives Liefern:
+   a) Stelle dem Nutzer gezielte Fragen, die ihn zur Lösung führen.
+   b) Beispiel: Statt "Der Text ist traurig", frage: "Welche Wörter oder Bilder im Text erzeugen eine melancholische Stimmung?"
+
+4. Klare, präzise Sprache:
+   a) Vermeide vages "Geschwafel". Sei präzise in deiner Terminologie (z.B. "Hypotaxe" statt "lange Sätze").
+   b) Definiere Fachbegriffe kurz, wenn du sie einführst.
+
+Gesamter Ton:
+* Analytisch, präzise, strukturiert und ermutigend.
+* Du bist ein Mentor, kein "Lösungs-Automat".
+* Dein Ziel ist die "kognitive Emergenz" beim Nutzer, nicht das "Offloading" der Aufgabe.`,
+            "prompt4": `Du bist der 'Programmier-Mentor', ein Senior System-Architekt. Deine Aufgabe ist es, Nutzern (oft Anfängern) zu helfen, Programmierprobleme zu lösen. Dein Fokus liegt nicht auf dem schnellsten Code-Schnipsel, sondern auf dem Aufbau eines robusten mentalen Modells und sauberer Architektur.
+
+Zweck und Ziele:
+* Dem Nutzer beibringen, wie ein Programmierer zu *denken* (Probleme dekonstruieren).
+* Saubere, lesbare und effiziente Code-Fundamente vermitteln.
+* Das "Warum" hinter Design-Entscheidungen (z.B. "Warum hier eine Funktion und keine globale Variable?") erklären.
+
+Verhalten und Regeln:
+1. Dekonstruktion des Problems:
+   a) Beginne *niemals* sofort mit dem Code.
+   b) Fordere den Nutzer auf, das Problem in eigenen Worten zu beschreiben.
+   c) Brich das Problem in logische Unterschritte (Input -> Verarbeitung -> Output).
+   d) Erstelle einen "Pseudo-Code" oder einen Aktionsplan, *bevor* der eigentliche Code geschrieben wird.
+
+2. Konzept vor Syntax:
+   a) Erkläre das Kernkonzept (z.B. "Wir brauchen hier eine 'Schleife', weil wir eine Aktion X-mal wiederholen") bevor du die Syntax (\`for\`, \`while\`) zeigst.
+   b) Nutze Analogien (z.B. "Eine 'Variable' ist wie eine beschriftete Box, in der du einen Wert lagerst").
+
+3. Code-Qualität (Das Fundament):
+   a) Der von dir bereitgestellte Code muss *immer* sauber kommentiert sein.
+   b) Achte auf saubere Benennung von Variablen (z.B. \`user_name\` statt \`x\`).
+   c) Erkläre "Best Practices" nebenbei (z.B. "Wir packen das in eine Funktion, um den Code wiederverwendbar zu machen").
+
+4. Kein "Autopilot":
+   a) Gib dem Nutzer keine komplette, komplexe Lösung auf einmal. Gib ihm den nächsten logischen Schritt oder Block.
+   b) Frage den Nutzer, was er *glaubt*, was als Nächstes kommen muss.
+
+Gesamter Ton:
+* Geduldig, logisch, strukturiert.
+* Wie ein "Senior-Entwickler", der einen "Junior" betreut.
+* Respektvoll, aber unerbittlich in Bezug auf saubere Architektur.`
+        };
+
+
+        // --- HAUPT-INITIALISIERUNG ---
+        // Wartet, bis das gesamte HTML-Dokument geladen ist.
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- System 1: Cookie-Banner Protokoll (Repariert) ---
+            // KEIN STORAGE. Wird immer angezeigt, bei Klick versteckt.
+            const cookieBanner = document.getElementById('cookie-banner');
+            const acceptCookiesBtn = document.getElementById('accept-cookies');
+            
+            // Zeige Banner beim Laden (CSS default ist 'flex')
+            
+            if(acceptCookiesBtn) {
+                acceptCookiesBtn.addEventListener('click', () => {
+                    if(cookieBanner) {
+                        cookieBanner.classList.add('hidden'); // CSS 'hidden' schiebt es raus
+                    }
+                });
+            }
+
+            // --- System 2: Hamburger-Menü Protokoll (Stabil) ---
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', () => {
+                    hamburger.classList.toggle('open');
+                    navLinks.classList.toggle('open');
+                });
+                
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('open');
+                        navLinks.classList.remove('open');
+                    });
+                });
+            }
+
+            // --- System 3: Interaktiver Wizard Protokoll (Repariert) ---
+            const wizardSteps = document.querySelectorAll('.wizard-step');
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+            const stepCounter = document.getElementById('step-counter');
+            let currentStep = 1;
+            const totalSteps = wizardSteps.length;
+
+            function updateWizard() {
+                wizardSteps.forEach(step => {
+                    step.classList.remove('active');
+                });
+                
+                const activeStep = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
+                if (activeStep) {
+                    activeStep.classList.add('active');
+                }
+                
+                if (stepCounter) {
+                    stepCounter.textContent = `Schritt ${currentStep} / ${totalSteps}`;
+                }
+                
+                if (prevBtn) {
+                    prevBtn.disabled = currentStep === 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = currentStep === totalSteps;
+                    nextBtn.textContent = (currentStep === totalSteps) ? 'Fertig!' : 'Weiter';
+                }
+            }
+
+            if (nextBtn && prevBtn && wizardSteps.length > 0) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentStep < totalSteps) {
+                        currentStep++;
+                        updateWizard();
+                    }
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        updateWizard();
+                    }
+                });
+                
+                updateWizard(); // Initialen Status setzen
+            }
+
+            // --- System 4: Impressum Toggle Protokoll (Repariert) ---
+            const impressumToggle = document.getElementById('toggleImpressum');
+            const impressumDetails = document.getElementById('impressum-details');
+            
+            if (impressumToggle && impressumDetails) {
+                impressumToggle.addEventListener('click', (e) => {
+                    e.preventDefault(); // Verhindert Springen
+                    
+                    const isShown = impressumDetails.classList.contains('show');
+                    
+                    if (isShown) {
+                        impressumDetails.classList.remove('show');
+                        impressumToggle.textContent = 'Impressum anzeigen';
+                    } else {
+                        impressumDetails.classList.add('show');
+                        impressumToggle.textContent = 'Impressum verbergen';
+                    }
+                });
+            }
+
+            // --- System 5: "Unzerbrechliches" Copy-to-Clipboard Protokoll (Repariert) ---
+
+            // A. Fallback-Protokoll (für file:///)
+            function fallbackCopyTextToClipboard(text, button) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    updateButtonFeedback(button, true);
+                } catch (err) {
+                    updateButtonFeedback(button, false);
+                }
+                
+                document.body.removeChild(textArea);
+            }
+
+            // B. Feedback-Protokoll
+            function updateButtonFeedback(button, success) {
+                const originalText = button.getAttribute('data-original-text');
+                
+                if (success) {
+                    button.textContent = 'Kopiert!';
+                    button.classList.add('copied');
+                } else {
+                    button.textContent = 'Fehler!';
+                }
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }
+
+            // C. Haupt-Protokoll (Event Listeners)
+            const copyButtons = document.querySelectorAll('.btn-copy');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+                    const textToCopy = promptDataStore[targetId]; // Holt vollen Text aus dem Datenspeicher
+                    
+                    if (!textToCopy) {
+                        updateButtonFeedback(button, false); // Fehler, wenn Prompt nicht gefunden
+                        return;
+                    }
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            updateButtonFeedback(button, true);
+                        }).catch(err => {
+                            fallbackCopyTextToClipboard(textToCopy, button);
+                        });
+                    } else {
+                        fallbackCopyTextToClipboard(textToCopy, button);
+                    }
+                });
+            });
+
+            // --- System 6: Partikel-System (Stabil) ---
+            const particlesContainer = document.getElementById('particles-js');
+            if (particlesContainer) {
+                // Dieses Skript ist robust und sollte keine Fehler verursachen.
+                // Es wird hier eingebettet, um eine weitere Datei zu vermeiden.
+                // (Minimales Partikel-Skript, direkt eingebettet)
+                const canvas = document.createElement('canvas');
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                particlesContainer.appendChild(canvas);
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                
+                function resizeCanvas() {
+                    canvas.width = particlesContainer.clientWidth;
+                    canvas.height = particlesContainer.clientHeight;
+                }
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 1;
+                        this.speedX = (Math.random() - 0.5) * 1.5;
+                        this.speedY = (Math.random() - 0.5) * 1.5;
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.size > 0.1) this.size -= 0.01;
+                    }
+                    draw() {
+                        ctx.fillStyle = 'rgba(0, 123, 255, 0.5)';
+                        ctx.strokeStyle = 'rgba(0, 123, 255, 0.5)';
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    for (let i = 0; i < 80; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+                initParticles();
+
+                function animateParticles() {
+                    if (!canvas.getContext) return;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                        if (particles[i].size <= 0.1) {
+                            particles.splice(i, 1);
+                            particles.push(new Particle());
+                            i--;
+                        }
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+                animateParticles();
+            }
+
+        }); // Ende DOMContentLoaded
+    </script>
+</body>
+</html>
